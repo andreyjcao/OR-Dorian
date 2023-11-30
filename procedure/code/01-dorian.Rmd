@@ -22,16 +22,29 @@ https://www.earthdatascience.org/courses/earth-analytics/get-data-using-apis/use
 Load the R project saved in the root directory of this repository, so that the
 working directory is the root directory of the repository.
 
-```{r setup, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setting it up}
+# install r version from 9-10-2021
+if(!require(groundhog)){
+  install.packages("groundhog")
+  require(groundhog)
+}
 
+if(!require(here)){
+  install.packages("here")
+  require(here)
+}
+
+groundhog.day <- "2021-09-10"
+set.groundhog.folder(here("data", "scratch", "groundhog"))
+
+groundhog.library(packages, groundhog.day)
 # list of required packages
 packages <- c(
   "here", "svDialogs", "tidyverse",
-  "rtweet", "rehydratoR",
   "tidytext", "tm", "igraph", "ggraph",
   "tidycensus", "sf", "spdep"
 )
+
 
 # additional packages: test which are still needed:
 # "maps", "tm", "RColorBrewer", "rccmisc",
@@ -48,6 +61,21 @@ package_check <- lapply(
 )
 ```
 
+```{r}
+
+# Install the 'remotes' package if you haven't already
+install.packages("remotes")
+# Load the 'remotes' package
+library(remotes)
+Se
+# installing a previous version of rtweet
+# in 2021, would have been version 0.7.0.
+install_version("rtweet", version = "0.7.0")
+library(rtweet)
+
+```
+
+
 ```{r save R processing environment}
 # save the R processing environment, including date in file name
 writeLines(
@@ -55,7 +83,7 @@ writeLines(
   here("procedure", "environment", paste0("r-environment-", Sys.Date(), ".txt"))
   )
 ```
-
+sessionInfo()
 
 ## Set up Twitter Application
 
@@ -122,6 +150,8 @@ get tweets for hurricane Dorian, searched on September 11, 2019
 It is here for reference or replication work only.
 
 ```{r search-dorian, eval = FALSE}
+dorian <- read_sf(here("data", "raw", "private", "covidcase080120.gpkg"))
+
 dorian_raw <- search_tweets("dorian OR hurricane OR sharpiegate",
   n = 200000, include_rts = FALSE,
   token = twitter_token,
@@ -226,7 +256,7 @@ november_raw <- rehydratoR(twitter_token$app$key, twitter_token$app$secret,
 )
 ``` 
 
-## Load the original search results
+## START HERE Load the original search results
 
 Students in the GEOG 323 Open Source GIScience course may download the original
 search results from the private course data repository: 
@@ -234,7 +264,7 @@ https://github.com/GIS4DEV/geog323data/raw/main/dorian/dorian_raw.RDS
 https://github.com/GIS4DEV/geog323data/raw/main/dorian/november.RDS
 
 Save the two `.RDS` files to the `data/raw/private` folder and then load the
-data with the code block below.
+??data with the code block below.
 
 ```{r load-original}
 dorian_raw <- readRDS(here("data", "raw", "private", "dorian_raw.RDS"))
